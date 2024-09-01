@@ -13,3 +13,8 @@ This is part of Brad Traversy's [**Modern JS From The Beginning 2.0**](https://w
 - Includes the most popular movies and TV shows with their own detailed pages.
 - Search box for movies and shows with full pagination.
 - A slider for movies that are currently playing in theaters. The slider uses the [Swiper](https://swiperjs.com) library.
+
+In addition to Brad's requirements, I also added:
+
+- A [Swiper](https://swiperjs.com) slider for shows that are currently airing.
+- **(WIP)** Shows/movie casts and reviews.
