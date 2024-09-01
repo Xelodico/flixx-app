@@ -111,41 +111,61 @@ async function displayMovieDetails() {
           </div>
           <div>
             <h2>${movie.title}</h2>
-            <p>
+            ${
+              movie.vote_average
+                ? `<p>
               <i class="fas fa-star text-primary"></i>
               ${movie.vote_average.toFixed(1)} / 10
-            </p>
-            <p class="text-muted">Release Date: ${movie.release_date}</p>
+            </p>`
+                : ""
+            }
+
+            <p class="text-muted">Release Date: ${
+              movie.release_date ? movie.release_date : "N/A"
+            }</p>
             <p>
             ${movie.overview}
             </p>
             <h5>Genres</h5>
-            <ul class="list-group">
-              ${movie.genres.map((genre) => `<li>${genre.name}</li>`).join("")}
+            <ul class="list-group"> ${
+              movie.genres.length
+                ? `${movie.genres
+                    .map((genre) => `<li>${genre.name}</li>`)
+                    .join("")}`
+                : "N/A"
+            }
+              
             </ul>
-            <a href="${
+            ${
               movie.homepage
-            }" target="_blank" class="btn">Visit Movie Homepage</a>
+                ? `<a href="${movie.homepage}" target="_blank" class="btn">Visit Movie Homepage</a>`
+                : ""
+            }
+
           </div>
         </div>
         <div class="details-bottom">
           <h2>Movie Info</h2>
           <ul>
-            <li><span class="text-secondary">Budget:</span> $${addCommasToNumber(
-              movie.budget
-            )}</li>
-            <li><span class="text-secondary">Revenue:</span> $${addCommasToNumber(
-              movie.revenue
-            )}</li>
+            <li><span class="text-secondary">Budget:</span> ${
+              movie.budget ? `$${addCommasToNumber(movie.budget)}` : "N/A"
+            }</li>
+            <li><span class="text-secondary">Revenue:</span> ${
+              movie.revenue ? `$${addCommasToNumber(movie.revenue)}` : "N/A"
+            }</li>
             <li><span class="text-secondary">Runtime:</span> ${
-              movie.runtime
-            } minutes</li>
+              movie.runtime ? `${movie.runtime} minutes` : "N/A"
+            }</li>
             <li><span class="text-secondary">Status:</span> ${movie.status}</li>
           </ul>
           <h4>Production Companies</h4>
-          <div class="list-group">${movie.production_companies
-            .map((company) => `<span>${company.name}</span>`)
-            .join(", ")}</div>
+          <div class="list-group">${
+            movie.production_companies.length
+              ? `${movie.production_companies
+                  .map((company) => `<span>${company.name}</span>`)
+                  .join(", ")}</div>`
+              : "N/A"
+          }
           </div>`;
 
   document.querySelector("#movie-details").appendChild(div);
@@ -181,21 +201,36 @@ async function displayShowDetails() {
   </div>
   <div>
     <h2>${show.name}</h2>
-    <p>
+    ${
+      show.vote_average
+        ? `<p>
       <i class="fas fa-star text-primary"></i>
       ${show.vote_average.toFixed(1)} / 10
-    </p>
-    <p class="text-muted">Last Air Date: ${show.last_air_date}</p>
+    </p>`
+        : ""
+    }
+    ${
+      show.last_air_date
+        ? `<p class="text-muted">Last Air Date: ${show.last_air_date}</p>`
+        : ""
+    }
+    
     <p>
       ${show.overview}
     </p>
     <h5>Genres</h5>
-    <ul class="list-group">
-    ${show.genres.map((genre) => `<li>${genre.name}</li>`).join("")}
+    <ul class="list-group"> ${
+      show.genres.length
+        ? `${show.genres.map((genre) => `<li>${genre.name}</li>`).join("")}`
+        : "N/A"
+    }
     </ul>
-    <a href="${
+    ${
       show.homepage
-    }" target="_blank" class="btn">Visit Show Homepage</a>
+        ? `<a href="${show.homepage}" target="_blank" class="btn">Visit Show Homepage</a>`
+        : ""
+    }
+
   </div>
 </div>
 <div class="details-bottom">
@@ -206,15 +241,19 @@ async function displayShowDetails() {
     }</li>
     <li>
       <span class="text-secondary">Last Episode To Air:</span> ${
-        show.last_episode_to_air.name
+        show.last_episode_to_air ? show.last_episode_to_air.name : "N/A"
       }
     </li>
     <li><span class="text-secondary">Status:</span> ${show.status}</li>
   </ul>
   <h4>Production Companies</h4>
-  <div class="list-group">${show.production_companies
-    .map((company) => `<span>${company.name}</span>`)
-    .join(", ")}</div>
+  <div class="list-group">${
+    show.production_companies.length
+      ? `${show.production_companies
+          .map((company) => `<span>${company.name}</span>`)
+          .join(", ")}</div>`
+      : "N/A"
+  }
 </div>`;
 
   document.querySelector("#show-details").appendChild(div);
@@ -260,6 +299,7 @@ async function search() {
       showAlert("No results found");
       return;
     }
+
     document.querySelector("#search-term").value = "";
 
     displaySearchResults(results);
@@ -308,8 +348,12 @@ ${
             <p class="card-text">
               <small class="text-muted">${
                 global.search.type === "movie"
-                  ? `Released: ${result.release_date}`
-                  : `First Aired: ${result.first_air_date}`
+                  ? `Released: ${
+                      result.release_date ? result.release_date : "N/A"
+                    }`
+                  : `First Aired: ${
+                      result.first_air_date ? result.first_air_date : "N/A"
+                    }`
               }</small>
             </p>
           </div>`;
