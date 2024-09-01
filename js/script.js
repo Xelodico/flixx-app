@@ -50,8 +50,6 @@ ${
 async function displayPopularShows() {
   const { results } = await fetchAPIData("tv/popular");
 
-  console.log(results);
-
   results.forEach((show) => {
     const div = document.createElement("div");
     div.classList.add("card");
@@ -402,26 +400,39 @@ function displayPagination() {
   });
 }
 
-// Display Slider Movies
+// Display Slider Movies/Shows
 async function displaySlider() {
-  const { results } = await fetchAPIData("movie/now_playing");
+  const isMovie = global.currentPage !== "/shows.html";
+  let { results } = [];
 
-  results.forEach((movie) => {
+  if (isMovie) {
+    ({ results } = await fetchAPIData("movie/now_playing"));
+  } else {
+    ({ results } = await fetchAPIData("tv/airing_today"));
+  }
+
+  results.forEach((result) => {
     const div = document.createElement("div");
     div.classList.add("swiper-slide");
 
     div.innerHTML = `
-            <a href="movie-details.html?id=${movie.id}">
+            <a href="${isMovie ? "movie" : "tv"}-details.html?id=${result.id}">
             ${
-              movie.poster_path
-                ? `<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />`
-                : `<img src="./images/no-image.jpg" alt="${movie.title}" />`
+              result.poster_path
+                ? `<img src="https://image.tmdb.org/t/p/w500${
+                    result.poster_path
+                  }" alt="${isMovie ? result.title : result.name}" />`
+                : `<img src="./images/no-image.jpg" alt="${
+                    isMovie ? result.title : result.name
+                  }" />`
             } 
             </a>
             <h4 class="swiper-rating">
-              <i class="fas fa-star text-secondary"></i> ${movie.vote_average.toFixed(
-                1
-              )} / 10
+              <i class="fas fa-star text-secondary"></i> ${
+                result.vote_average
+                  ? `${result.vote_average.toFixed(1)} / 10`
+                  : "TBA"
+              }
             </h4>
           </div>`;
 
@@ -523,6 +534,7 @@ function init() {
       displayPopularMovies();
       break;
     case "/shows.html":
+      displaySlider();
       displayPopularShows();
       break;
     case "/movie-details.html":
