@@ -17,4 +17,5 @@ This is part of Brad Traversy's [**Modern JS From The Beginning 2.0**](https://w
 In addition to Brad's requirements, I also added:
 
 - A [Swiper](https://swiperjs.com) slider for shows that are currently airing.
-- **(WIP)** Shows/movie casts and reviews.
+- Casting information. This also uses the [Swiper](https://swiperjs.com) library.
+- **(WIP)** Section for reviews.
