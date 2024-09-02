@@ -167,6 +167,7 @@ async function displayMovieDetails() {
           </div>`;
 
   document.querySelector("#movie-details").appendChild(div);
+  displayCastSlider();
 }
 
 // Display Show Details
@@ -436,6 +437,33 @@ async function displaySlider() {
             </h4>
           </div>`;
 
+    document.querySelector(".swiper-wrapper").appendChild(div);
+    initSwiper();
+  });
+}
+
+async function displayCastSlider() {
+  const ID = window.location.search.split("=")[1];
+  const { cast } = await fetchAPIData(`movie/${ID}/credits`);
+  const actors = cast.filter(
+    (actor) => actor.known_for_department === "Acting"
+  );
+  console.log(actors);
+
+  actors.forEach((actor) => {
+    const div = document.createElement("div");
+    div.classList.add("swiper-slide");
+
+    div.innerHTML = `
+            ${
+              actor.profile_path
+                ? `<img src="https://image.tmdb.org/t/p/w500${actor.profile_path}" alt="${actor.name}" />`
+                : `<img src="./images/no-image.jpg" alt="${actor.name}" />`
+            } 
+            <h4 class="actor-info">
+              ${actor.name} - <span class="actor-character">${actor.character}</span>
+            </h4>
+          </div>`;
     document.querySelector(".swiper-wrapper").appendChild(div);
     initSwiper();
   });

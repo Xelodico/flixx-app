@@ -204,6 +204,10 @@ section h2 {
   align-items: center;
 }
 
+.swiper-slide span[class="actor-character"] {
+  font-weight: normal;
+}
+
 .swiper-slide img {
   display: block;
   width: 100%;
