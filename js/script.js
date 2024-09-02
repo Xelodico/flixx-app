@@ -442,13 +442,38 @@ async function displaySlider() {
   });
 }
 
+// Display Slider Cast
 async function displayCastSlider() {
   const ID = window.location.search.split("=")[1];
   const { cast } = await fetchAPIData(`movie/${ID}/credits`);
+
+  // Return if no cast members were found
+  if (!cast.length) {
+    return;
+  }
+
+  // Filter to include actors only (i.e, no crew)
   const actors = cast.filter(
     (actor) => actor.known_for_department === "Acting"
   );
-  console.log(actors);
+
+  // Log actors array for debugging purposes
+  // console.log(actors);
+
+  // Create an H2 heading of "Cast"
+  const castHeading = document.createElement("h2");
+  castHeading.appendChild(document.createTextNode("Cast"));
+
+  const details = document.querySelector("#movie-details");
+  details.appendChild(castHeading);
+
+  const swiperDiv = document.createElement("div");
+  swiperDiv.classList.add("swiper");
+
+  const swiperWrapperDiv = document.createElement("div");
+  swiperWrapperDiv.classList.add("swiper-wrapper");
+
+  swiperDiv.appendChild(swiperWrapperDiv);
 
   actors.forEach((actor) => {
     const div = document.createElement("div");
@@ -461,12 +486,17 @@ async function displayCastSlider() {
                 : `<img src="./images/no-image.jpg" alt="${actor.name}" />`
             } 
             <h4 class="actor-info">
-              ${actor.name} - <span class="actor-character">${actor.character}</span>
+              ${actor.name}${
+      actor.character
+        ? ` - <span class="actor-character">${actor.character}</span>`
+        : ""
+    }
             </h4>
           </div>`;
-    document.querySelector(".swiper-wrapper").appendChild(div);
-    initSwiper();
+    swiperWrapperDiv.appendChild(div);
   });
+  details.appendChild(swiperDiv);
+  initSwiper();
 }
 
 function initSwiper() {
