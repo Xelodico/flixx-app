@@ -256,6 +256,7 @@ async function displayShowDetails() {
 </div>`;
 
   document.querySelector("#show-details").appendChild(div);
+  displayCastSlider();
 }
 
 // Display Backdrop on Details pages
@@ -438,21 +439,33 @@ async function displaySlider() {
           </div>`;
 
     document.querySelector(".swiper-wrapper").appendChild(div);
-    initSwiper();
   });
+  initSwiper();
 }
 
 // Display Slider Cast
 async function displayCastSlider() {
+  // Get the ID of the movie/show
   const ID = window.location.search.split("=")[1];
-  const { cast } = await fetchAPIData(`movie/${ID}/credits`);
+  // Check if the user's current page isn't "/tv-details.html". This tells us they're viewing a movie, therefore return true
+  const isMovie = global.currentPage !== "/tv-details.html";
+
+  // Initialise an empty array of objects, returning the cast members using destructuring
+  let { cast } = [];
+
+  // Fetch the appropriate API data depending on whether it's a movie
+  if (isMovie) {
+    ({ cast } = await fetchAPIData(`movie/${ID}/credits`));
+  } else {
+    ({ cast } = await fetchAPIData(`tv/${ID}/aggregate_credits`));
+  }
 
   // Return if no cast members were found
   if (!cast.length) {
     return;
   }
 
-  // Filter to include actors only (i.e, no crew)
+  // Filter to include actors only (i.e, no crew members)
   const actors = cast.filter(
     (actor) => actor.known_for_department === "Acting"
   );
@@ -464,21 +477,37 @@ async function displayCastSlider() {
   const castHeading = document.createElement("h2");
   castHeading.appendChild(document.createTextNode("Cast"));
 
-  const details = document.querySelector("#movie-details");
+  // Add heading to the DOM
+  const details = document.querySelector(
+    `#${isMovie ? "movie" : "show"}-details`
+  );
   details.appendChild(castHeading);
 
+  // Create a new div with class "swiper"
   const swiperDiv = document.createElement("div");
   swiperDiv.classList.add("swiper");
 
+  // Create a new div with class "swiper-wrapper"
   const swiperWrapperDiv = document.createElement("div");
   swiperWrapperDiv.classList.add("swiper-wrapper");
 
+  // Append the swiper wrapper inside the swiper div
   swiperDiv.appendChild(swiperWrapperDiv);
 
+  // Add each actor to the swiper wrapper
   actors.forEach((actor) => {
+    // Create a new div with class "swiper-slide"
     const div = document.createElement("div");
     div.classList.add("swiper-slide");
 
+    /*
+    Add each actor to the Swiper slider
+    - Verify if the actor's picture is available, otherwise default to no-image.jpg
+    
+    - Check if the actor is from a movie, then retrieve their character (movie) or roles (show).
+      - Use .slice(0, 4) to limit the number of roles displayed to just 5
+    - If their character/role cannot be found, return nothing.
+    */
     div.innerHTML = `
             ${
               actor.profile_path
@@ -487,25 +516,36 @@ async function displayCastSlider() {
             } 
             <h4 class="actor-info">
               ${actor.name}${
-      actor.character
-        ? ` - <span class="actor-character">${actor.character}</span>`
+      isMovie
+        ? actor.character
+          ? ` - <span class="actor-character">${actor.character}</span>`
+          : ""
+        : actor.roles[0].character
+        ? ` - <span class="actor-character">${actor.roles
+            .map((role) => role.character)
+            .slice(0, 4)
+            .join(", ")}</span>`
         : ""
     }
             </h4>
           </div>`;
     swiperWrapperDiv.appendChild(div);
   });
+
+  // Add the swiper div to the DOM
   details.appendChild(swiperDiv);
+  // Initialise the swiper library
   initSwiper();
 }
 
+// Initialise the swiper library
 function initSwiper() {
   const swiper = new Swiper(".swiper", {
     slidesPerView: 1,
     spaceBetween: 30,
     freeMode: true,
     loop: true,
-    autoplay: { delay: 4000, disableOnInteraction: true },
+    autoplay: { delay: 4000, disableOnInteraction: false },
     breakpoints: {
       500: { slidesPerView: 2 },
       700: { slidesPerView: 3 },
