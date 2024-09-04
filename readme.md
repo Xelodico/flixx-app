@@ -18,4 +18,3 @@ In addition to Brad's requirements, I also added:
 
 - A [Swiper](https://swiperjs.com) slider for shows that are currently airing.
 - Casting information. This also uses the [Swiper](https://swiperjs.com) library.
-- **(WIP)** Section for reviews.
